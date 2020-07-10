@@ -36,5 +36,18 @@ function tabArchitect(topic){
         tab.classList.add("tab")
         tab.innerText = topic
 
+        tab.addEventListener("click", function(){
+            const articleList = Array.from(document.querySelectorAll(".card"))
+            articleList.forEach(article =>{
+                let classes = article.classList
+                let result = classes.contains(tab.innerText.toLocaleLowerCase())
+                if (result === false){
+                    article.style.display = "none"
+                } else {
+                    article.style.display = "block"
+                }
+            })
+        })
+
         return tab
 }

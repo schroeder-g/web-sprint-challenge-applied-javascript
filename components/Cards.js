@@ -5,18 +5,64 @@
 // You will be creating a card for each article in the response.
 // This won't be as easy as just iterating over an array though.
 //
-// Write a function that takes a single article object and returns the following markup:
-//
-// <div class="card">
-//   <div class="headline">{Headline of article}</div>
-//   <div class="author">
-//     <div class="img-container">
-//       <img src={url of authors image} />
-//     </div>
-//     <span>By {author's name}</span>
-//   </div>
-// </div>
-//
-// Add a listener for click events so that when a user clicks on a card, the headline of the article is logged to the console.
-//
+
+function getArticles(){
+const url = "https://lambda-times-backend.herokuapp.com/articles"
+axios.get(url)
+.then(response => {
+    const entryPoint = document.querySelector(".cards-container")
+    const topicList = response.data.articles
+    for (let topic in topicList){
+        let articleList = topicList[topic]
+
+        articleList.forEach(article => {
+            const htmlCard = cardArchitect(article)
+            htmlCard.classList.add(topic) //for filtering by topic
+            entryPoint.appendChild(htmlCard)
+        })
+    }
+    // topicList.forEach(topic => {
+    //     console.log(topic)
+    // })
+    })
+.catch(error => {
+    console.log(error)
+})
+}
+
+getArticles()
 // Use your function to create a card for each of the articles, and append each card to the DOM.
+
+function cardArchitect(article){
+//instantiate cards with classes and text
+    const card = document.createElement("div")
+    card.classList.add("card")
+
+    const headLine = document.createElement("div")
+    headLine.classList.add("headline")
+    headLine.innerText = article.headline
+
+    const author =document.createElement("div")
+    author.classList.add("author")
+
+    const authImgCon = document.createElement("div")
+    authImgCon.classList.add("img-container")
+
+    const authImg = document.createElement("img")
+    authImg.src = article.authorPhoto
+
+    const authName = document.createElement("span")
+    authName.innerText = `By ${article.authorName}`
+
+//compose card el hierarchy
+    card.appendChild(headLine)
+    card.appendChild(author)
+    author.appendChild(authImgCon)
+    authImgCon.appendChild(authImg)
+    author.appendChild(authName)
+
+//add card event listener
+    card.addEventListener("click", () => console.log(article.headline))
+
+    return card
+}
